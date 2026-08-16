@@ -1,8 +1,7 @@
-// Miku-chan Balance Mascot — Client half (v12: edge-tts voice)
+// Miku-chan Balance Mascot — Client half (v13: pixel art)
 // DeepSeek Harness (DSH) 动态 Cordis 插件 Client 端源码。
-// 功能：初音绿主题 + 右下角初音（支持自定义图片头像）+ edge-tts 日语女声音。
+// 功能：初音绿主题 + 右下角像素风初音小人（retro 像素画 + 跳动/眨眼/说话动画）+ edge-tts 日语女声音。
 // 使用方式：把本文件内容作为 cordis_define 的 code.client 提交。
-// 头像：把 PNG/GIF/WebP 图片放入 <workspaceRoot>/.miku-avatar/ 即可自动使用。
 
 return {
   inject: ['timer'],
@@ -28,39 +27,94 @@ return {
 
     // ---- 插件样式 ----
     styles.insert(`
-.miku-widget { position: fixed; right: 16px; bottom: 14px; z-index: 9999; pointer-events: auto; user-select: none; font-family: -apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif; }
-.miku-bubble { position: absolute; right: 4px; bottom: 200px; width: 240px; background: linear-gradient(135deg, #ffffff 0%, #f0fbf8 100%); border: 2px solid #39C5BB; border-radius: 18px; padding: 11px 14px; font-size: 13px; line-height: 1.6; color: #123B38; box-shadow: 0 10px 32px rgba(57,197,187,.45); }
+.miku-widget { position: fixed; right: 14px; bottom: 12px; z-index: 9999; pointer-events: auto; user-select: none; font-family: -apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+.miku-bubble { position: absolute; right: 4px; bottom: 152px; width: 240px; background: linear-gradient(135deg, #ffffff 0%, #f0fbf8 100%); border: 2px solid #39C5BB; border-radius: 18px; padding: 11px 14px; font-size: 13px; line-height: 1.6; color: #123B38; box-shadow: 0 10px 32px rgba(57,197,187,.45); }
 .miku-bubble::after { content: ''; position: absolute; right: 44px; bottom: -11px; border: 10px solid transparent; border-top-color: #39C5BB; }
 .miku-bubble-title { font-weight: 700; color: #1FAF8F; margin-bottom: 3px; letter-spacing: .5px; }
 .miku-bubble-sub { color: #4D7975; font-size: 11.5px; }
 .miku-bubble-warn { border-color: #F0A93E; background: linear-gradient(135deg, #fffdf6 0%, #fff7e6 100%); }
 .miku-bubble-warn::after { border-top-color: #F0A93E; }
 .miku-bubble-warn .miku-bubble-title { color: #D97B1F; }
-.miku-stage { position: relative; width: 176px; height: 206px; cursor: pointer; filter: drop-shadow(0 8px 18px rgba(57,197,187,.4)); transition: transform .15s; animation: miku-idle 3.6s ease-in-out infinite; transform-origin: 50% 100%; }
+.miku-stage { position: relative; width: 112px; height: 190px; cursor: pointer; image-rendering: pixelated; transition: transform .12s; animation: miku-idle 3.4s steps(2) infinite; }
 .miku-stage:hover { transform: translateY(-3px); }
-.miku-stage:active { transform: scale(.96); }
-@keyframes miku-idle { 0%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} 70%{transform:translateY(-2px)} }
-.miku-bounce { animation: miku-bounce .55s ease, miku-idle 3.6s ease-in-out infinite; }
-@keyframes miku-bounce { 0%{transform:translateY(0) scale(1)} 30%{transform:translateY(-16px) scale(1.05)} 60%{transform:translateY(4px) scale(.97)} 100%{transform:translateY(0) scale(1)} }
-.miku-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
-.miku-img-talk { animation: miku-talk .3s ease-in-out infinite alternate; }
-@keyframes miku-talk { from{transform:translateY(0) rotate(0deg)} to{transform:translateY(-3px) rotate(1.2deg)} }
-.miku-hearts { position: absolute; right: 10px; bottom: 168px; pointer-events: none; font-size: 22px; animation: miku-heart 1s ease-out forwards; }
-@keyframes miku-heart { 0%{opacity:0; transform:translateY(0) scale(.5)} 30%{opacity:1} 100%{opacity:0; transform:translateY(-58px) scale(1.4)} }
-.miku-notes { position: absolute; right: 2px; bottom: 150px; pointer-events: none; font-size: 17px; animation: miku-note .9s ease-out forwards; }
-@keyframes miku-note { 0%{opacity:0; transform:translateY(0) rotate(0)} 40%{opacity:1} 100%{opacity:0; transform:translateY(-40px) rotate(28deg)} }
-.miku-hint { position: absolute; left: -86px; top: 66px; width: 72px; font-size: 10.5px; color: #4D7975; text-align: center; opacity: .8; }
+.miku-stage:active { transform: scale(.94); }
+@keyframes miku-idle { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+.miku-bounce { animation: miku-bounce .5s steps(4), miku-idle 3.4s steps(2) infinite; }
+@keyframes miku-bounce { 0%{transform:translateY(0)} 30%{transform:translateY(-18px)} 60%{transform:translateY(4px)} 100%{transform:translateY(0)} }
+.miku-hearts { position: absolute; right: 12px; bottom: 132px; pointer-events: none; font-size: 18px; animation: miku-heart .9s steps(4) forwards; }
+@keyframes miku-heart { 0%{opacity:0; transform:translateY(0)} 40%{opacity:1} 100%{opacity:0; transform:translateY(-46px)} }
+.miku-notes { position: absolute; right: 2px; bottom: 118px; pointer-events: none; font-size: 14px; animation: miku-note .8s steps(4) forwards; }
+@keyframes miku-note { 0%{opacity:0; transform:translateY(0)} 50%{opacity:1} 100%{opacity:0; transform:translateY(-32px)} }
+.miku-hint { position: absolute; left: -84px; top: 70px; width: 70px; font-size: 10.5px; color: #4D7975; text-align: center; opacity: .8; }
 .miku-sound { position: absolute; right: -4px; top: 12px; font-size: 11.5px; color: #1FAF8F; background: rgba(255,255,255,.88); border: 1px solid #AEDCD6; border-radius: 10px; padding: 2px 8px; animation: miku-sound-in .25s ease-out; }
 @keyframes miku-sound-in { from{opacity:0; transform:scale(.7)} to{opacity:1; transform:scale(1)} }
-.miku-img-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #1FAF8F; font-size: 12px; }
 `)
 
     const slots = ctx.get('slots')
     if (!slots) return
 
-    const FallbackAvatar = () => React.createElement('div', { style: { width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 84 } }, '🎤')
+    // ---- 像素初音：16x27 网格，双马尾像素风 ----
+    const PIX = [
+      '.T............T.',
+      '.TT..........TT.',
+      '.TTTTTTTTTTTTTT.',
+      '..TTTTTTTTTTTT..',
+      '.TT..TTTTTT..TT.',
+      '.T....SSSS....T.',
+      '.T..SSSSSSSS..T.',
+      '.T..SSSSSSSS..T.',
+      '.T..SEESSEES..T.',
+      '.T..SEESSEES..T.',
+      '.T..SSSSSSSS..T.',
+      '.T..SSSRRSSS..T.',
+      '.T..SSSMSSSS..T.',
+      '.TT.SSSSSSSS.TT.',
+      '...SSSSSSSSSS...',
+      '....SSSSSSSS....',
+      '.....WWWWWW.....',
+      '....WWWWWWWW....',
+      '....WWBBBBWW....',
+      '.....WWWWWW.....',
+      '.....KKKKKK.....',
+      '....KKKKKKKK....',
+      '....KKKKKKKK....',
+      '....KK....KK....',
+      '...SSS....SSS...',
+      '...KKK....KKK...',
+      '...KKK....KKK...',
+    ]
+    const COLOR = {
+      T: '#4FE0D2',
+      S: '#FFF2E2',
+      E: '#1E8E8A',
+      R: '#FFB6C1',
+      M: '#C96A5B',
+      W: '#FFFFFF',
+      B: '#3A5FD0',
+      K: '#2B5FA8',
+    }
 
-    // 台词：日语 + 中文混搭，配合高音调更像 Miku
+    const MikuPix = ({ blink, talking }) => {
+      const rows = PIX.slice()
+      if (blink) {
+        rows[8] = rows[8].replace('SEESSEES', 'SSSSSSSS')
+        rows[9] = rows[9].replace('SEESSEES', 'SSSSSSSS')
+      }
+      if (talking) {
+        rows[12] = rows[12].replace('SSSMSSSS', 'SSSMMSSS')
+      }
+      const rects = []
+      for (let y = 0; y < rows.length; y++) {
+        const row = rows[y]
+        for (let x = 0; x < row.length; x++) {
+          const c = row[x]
+          if (c === '.') continue
+          rects.push(React.createElement('rect', { key: x + '-' + y, x: x, y: y, width: 1, height: 1, fill: COLOR[c] }))
+        }
+      }
+      return React.createElement('svg', { viewBox: '0 0 16 27', width: 112, height: 189, shapeRendering: 'crispEdges' }, rects)
+    }
+
     const LINES = [
       { bubble: 'こんにちは！我是初音未来~', say: 'こんにちは！私は初音ミクです！よろしくお願いします！' },
       { bubble: '39！(Thank you!)', say: '39！みんな、ありがとう！' },
@@ -77,13 +131,12 @@ return {
     const MikuWidget = () => {
       const [balance, setBalance] = React.useState(null)
       const [usage, setUsage] = React.useState(null)
-      const [avatar, setAvatar] = React.useState(null)
-      const [avatarLoading, setAvatarLoading] = React.useState(true)
       const [bubble, setBubble] = React.useState('')
       const [bubbleWarn, setBubbleWarn] = React.useState(false)
       const [mood, setMood] = React.useState('normal')
       const [anim, setAnim] = React.useState(0)
       const [hearts, setHearts] = React.useState(0)
+      const [blink, setBlink] = React.useState(false)
       const [talking, setTalking] = React.useState(false)
       const [speakUrl, setSpeakUrl] = React.useState(null)
       const [speaking, setSpeaking] = React.useState(false)
@@ -93,6 +146,14 @@ return {
         setBubbleWarn(!!warn)
         ctx.timeout(() => setBubble((cur) => cur === text ? '' : cur), 3800)
       }
+
+      React.useEffect(() => {
+        const h = ctx.interval(() => {
+          setBlink(true)
+          ctx.timeout(() => setBlink(false), 220)
+        }, 3600)
+        return () => h()
+      }, [])
 
       const refresh = async () => {
         try {
@@ -118,10 +179,6 @@ return {
 
       React.useEffect(() => {
         refresh()
-        host.call('miku/avatar').then((r) => {
-          setAvatar(r && r.ok ? r : null)
-          setAvatarLoading(false)
-        }).catch(() => setAvatarLoading(false))
         const h = ctx.interval(() => refresh(), 60000)
         return () => h()
       }, [])
@@ -194,20 +251,6 @@ return {
           })
         : null
 
-      let figure
-      if (avatarLoading) {
-        figure = React.createElement('div', { className: 'miku-img-loading' }, '加载 Miku 图片…')
-      } else if (avatar && avatar.url) {
-        figure = React.createElement('img', {
-          className: 'miku-img' + (talking ? ' miku-img-talk' : ''),
-          src: avatar.url,
-          alt: '初音未来',
-          draggable: false,
-        })
-      } else {
-        figure = React.createElement(FallbackAvatar)
-      }
-
       return React.createElement('div', { className: 'miku-widget' },
         React.createElement('div', { className: 'miku-hint' }, '点我摸头·会说话哦~'),
         bubbleEl,
@@ -223,7 +266,7 @@ return {
           key: 'stage' + anim,
           onClick: onClick,
           title: '点我摸头~',
-        }, figure),
+        }, React.createElement(MikuPix, { blink: blink, talking: talking })),
         React.createElement('div', { className: 'miku-bubble-sub', style: { textAlign: 'center', marginTop: 2, fontSize: 10.5, color: '#4D7975' } }, usageText),
         audioEl,
       )
