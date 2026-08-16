@@ -1,6 +1,6 @@
-// Miku-chan Balance Mascot — Client half (v8: cute + TTS)
+// Miku-chan Balance Mascot — Client half (v9: anime style + pseudo-Live2D)
 // DeepSeek Harness (DSH) 动态 Cordis 插件 Client 端源码。
-// 功能：初音绿主题覆盖 + 右下角更可爱的 Q 版初音未来（渐变/呆毛/眨眼/呼吸/说话嘴型/TTS 语音）。
+// 功能：初音绿主题覆盖 + 右下角动漫风初音未来（超长双马尾立绘 / 伪 Live2D 动效 / TTS 语音）。
 // 使用方式：把本文件内容作为 cordis_define 的 code.client 提交。
 
 return {
@@ -27,105 +27,130 @@ return {
 
     // ---- 插件样式 ----
     styles.insert(`
-.miku-widget { position: fixed; right: 18px; bottom: 16px; z-index: 9999; pointer-events: auto; user-select: none; font-family: -apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif; }
-.miku-bubble { position: absolute; right: 2px; bottom: 148px; width: 216px; background: linear-gradient(135deg, #ffffff 0%, #f2fcf9 100%); border: 2px solid #39C5BB; border-radius: 16px; padding: 10px 13px; font-size: 12.5px; line-height: 1.55; color: #123B38; box-shadow: 0 8px 28px rgba(57,197,187,.4); }
-.miku-bubble::after { content: ''; position: absolute; right: 38px; bottom: -10px; border: 9px solid transparent; border-top-color: #39C5BB; }
+.miku-widget { position: fixed; right: 16px; bottom: 14px; z-index: 9999; pointer-events: auto; user-select: none; font-family: -apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+.miku-bubble { position: absolute; right: 4px; bottom: 190px; width: 230px; background: linear-gradient(135deg, #ffffff 0%, #f0fbf8 100%); border: 2px solid #39C5BB; border-radius: 18px; padding: 11px 14px; font-size: 13px; line-height: 1.6; color: #123B38; box-shadow: 0 10px 32px rgba(57,197,187,.45); }
+.miku-bubble::after { content: ''; position: absolute; right: 44px; bottom: -11px; border: 10px solid transparent; border-top-color: #39C5BB; }
 .miku-bubble-title { font-weight: 700; color: #1FAF8F; margin-bottom: 3px; letter-spacing: .5px; }
-.miku-bubble-sub { color: #4D7975; font-size: 11px; }
+.miku-bubble-sub { color: #4D7975; font-size: 11.5px; }
 .miku-bubble-warn { border-color: #F0A93E; background: linear-gradient(135deg, #fffdf6 0%, #fff7e6 100%); }
 .miku-bubble-warn::after { border-top-color: #F0A93E; }
 .miku-bubble-warn .miku-bubble-title { color: #D97B1F; }
-.miku-stage { position: relative; width: 150px; height: 158px; cursor: pointer; filter: drop-shadow(0 6px 14px rgba(57,197,187,.42)); transition: transform .15s; animation: miku-idle 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+.miku-stage { position: relative; width: 168px; height: 200px; cursor: pointer; filter: drop-shadow(0 8px 18px rgba(57,197,187,.45)); transition: transform .15s; animation: miku-idle 3.6s ease-in-out infinite; transform-origin: 50% 100%; }
 .miku-stage:hover { transform: translateY(-3px); }
-.miku-stage:active { transform: scale(.95); }
-@keyframes miku-idle { 0%,100%{transform:translateY(0) rotate(0deg)} 25%{transform:translateY(-4px) rotate(-1deg)} 75%{transform:translateY(-2px) rotate(1deg)} }
-.miku-bounce { animation: miku-bounce .55s ease, miku-idle 3.2s ease-in-out infinite; }
-@keyframes miku-bounce { 0%{transform:translateY(0) scale(1)} 30%{transform:translateY(-14px) scale(1.05)} 60%{transform:translateY(3px) scale(.98)} 100%{transform:translateY(0) scale(1)} }
-.miku-hearts { position: absolute; right: 8px; bottom: 124px; pointer-events: none; font-size: 20px; animation: miku-heart 1s ease-out forwards; }
-@keyframes miku-heart { 0%{opacity:0; transform:translateY(0) scale(.5)} 30%{opacity:1} 100%{opacity:0; transform:translateY(-52px) scale(1.35)} }
-.miku-notes { position: absolute; right: 0; bottom: 108px; pointer-events: none; font-size: 15px; animation: miku-note .85s ease-out forwards; }
-@keyframes miku-note { 0%{opacity:0; transform:translateY(0) rotate(0)} 40%{opacity:1} 100%{opacity:0; transform:translateY(-34px) rotate(25deg)} }
-.miku-hint { position: absolute; left: -78px; top: 52px; width: 66px; font-size: 10px; color: #4D7975; text-align: center; opacity: .75; }
-.miku-sound { position: absolute; right: -2px; top: 10px; font-size: 11px; color: #1FAF8F; background: rgba(255,255,255,.85); border: 1px solid #AEDCD6; border-radius: 10px; padding: 2px 7px; animation: miku-sound-in .25s ease-out; }
+.miku-stage:active { transform: scale(.96); }
+@keyframes miku-idle { 0%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} 70%{transform:translateY(-2px)} }
+.miku-bounce { animation: miku-bounce .55s ease, miku-idle 3.6s ease-in-out infinite; }
+@keyframes miku-bounce { 0%{transform:translateY(0) scale(1)} 30%{transform:translateY(-16px) scale(1.05)} 60%{transform:translateY(4px) scale(.97)} 100%{transform:translateY(0) scale(1)} }
+.miku-hearts { position: absolute; right: 10px; bottom: 158px; pointer-events: none; font-size: 22px; animation: miku-heart 1s ease-out forwards; }
+@keyframes miku-heart { 0%{opacity:0; transform:translateY(0) scale(.5)} 30%{opacity:1} 100%{opacity:0; transform:translateY(-58px) scale(1.4)} }
+.miku-notes { position: absolute; right: 2px; bottom: 140px; pointer-events: none; font-size: 17px; animation: miku-note .9s ease-out forwards; }
+@keyframes miku-note { 0%{opacity:0; transform:translateY(0) rotate(0)} 40%{opacity:1} 100%{opacity:0; transform:translateY(-40px) rotate(28deg)} }
+.miku-hint { position: absolute; left: -86px; top: 66px; width: 72px; font-size: 10.5px; color: #4D7975; text-align: center; opacity: .8; }
+.miku-sound { position: absolute; right: -4px; top: 12px; font-size: 11.5px; color: #1FAF8F; background: rgba(255,255,255,.88); border: 1px solid #AEDCD6; border-radius: 10px; padding: 2px 8px; animation: miku-sound-in .25s ease-out; }
 @keyframes miku-sound-in { from{opacity:0; transform:scale(.7)} to{opacity:1; transform:scale(1)} }
+/* 伪 Live2D：马尾摆动、发丝浮动 */
+.miku-tail-l { transform-box: fill-box; transform-origin: 88% 12%; animation: miku-tail-l 4.5s ease-in-out infinite; }
+.miku-tail-r { transform-box: fill-box; transform-origin: 12% 12%; animation: miku-tail-r 4.5s ease-in-out infinite; }
+@keyframes miku-tail-l { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(-2.2deg)} 75%{transform:rotate(1.6deg)} }
+@keyframes miku-tail-r { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(2.2deg)} 75%{transform:rotate(-1.6deg)} }
+.miku-bang { transform-box: fill-box; transform-origin: 50% 100%; animation: miku-bang 5s ease-in-out infinite; }
+@keyframes miku-bang { 0%,100%{transform:rotate(0deg)} 30%{transform:rotate(-1deg)} 80%{transform:rotate(.8deg)} }
+.miku-shine { animation: miku-shine 4s ease-in-out infinite; }
+@keyframes miku-shine { 0%,88%,100%{opacity:1} 92%{opacity:.15} 96%{opacity:1} }
 `)
 
     const slots = ctx.get('slots')
     if (!slots) return
 
-    // ---- 更可爱的 Q 版初音未来 SVG ----
+    // ---- 动漫风初音未来（还原超长双马尾立绘）----
     const MikuAvatar = ({ mood, blink, talking }) => {
       const worried = mood === 'worried'
       let mouth
       if (talking) {
-        mouth = React.createElement('ellipse', { cx: 85, cy: 118, rx: 6.5, ry: 8, fill: '#D96A5B' })
+        mouth = React.createElement('ellipse', { cx: 100, cy: 138, rx: 8, ry: 10, fill: '#C96A5B' })
       } else if (worried) {
-        mouth = React.createElement('path', { d: 'M76 120 Q85 115 94 120', stroke: '#C96B5B', strokeWidth: 3, fill: 'none', strokeLinecap: 'round' })
+        mouth = React.createElement('path', { d: 'M88 140 Q100 133 112 140', stroke: '#C96B5B', strokeWidth: 3.2, fill: 'none', strokeLinecap: 'round' })
       } else {
-        mouth = React.createElement('path', { d: 'M76 113 Q85 121 94 113', stroke: '#C96B5B', strokeWidth: 3, fill: 'none', strokeLinecap: 'round' })
+        mouth = React.createElement('path', { d: 'M89 132 Q100 142 111 132', stroke: '#C96B5B', strokeWidth: 3.2, fill: 'none', strokeLinecap: 'round' })
       }
       const eye = (cx) => {
         if (blink) {
-          return React.createElement('path', { d: 'M' + (cx - 11) + ' 96 Q' + cx + ' 89 ' + (cx + 11) + ' 96', stroke: '#1E837C', strokeWidth: 3.2, fill: 'none', strokeLinecap: 'round' })
+          return React.createElement('path', { d: 'M' + (cx - 14) + ' 112 Q' + cx + ' 103 ' + (cx + 14) + ' 112', stroke: '#1E837C', strokeWidth: 3.6, fill: 'none', strokeLinecap: 'round' })
         }
         return React.createElement('g', null,
-          React.createElement('ellipse', { cx: cx, cy: 97, rx: 11.5, ry: 14, fill: '#1E8E8A' }),
-          React.createElement('circle', { cx: cx + 4.2, cy: 90.5, r: 4.2, fill: '#FFFFFF' }),
-          React.createElement('circle', { cx: cx - 4, cy: 99, r: 2.2, fill: '#FFFFFF', opacity: .9 }),
-          React.createElement('path', { d: 'M' + (cx - 9) + ' 108 Q' + cx + ' 114 ' + (cx + 9) + ' 108', stroke: '#1E837C', strokeWidth: 2, fill: 'none', strokeLinecap: 'round' }),
+          React.createElement('ellipse', { cx: cx, cy: 113, rx: 14, ry: 17, fill: '#1E8E8A' }),
+          React.createElement('circle', { cx: cx + 5, cy: 104, r: 5.2, fill: '#FFFFFF' }),
+          React.createElement('circle', { cx: cx - 5, cy: 116, r: 2.6, fill: '#FFFFFF', opacity: .9 }),
+          React.createElement('circle', { cx: cx + 1, cy: 121, r: 1.8, fill: '#9FE8E0', opacity: .8 }),
+          React.createElement('path', { d: 'M' + (cx - 11) + ' 126 Q' + cx + ' 133 ' + (cx + 11) + ' 126', stroke: '#1E837C', strokeWidth: 2.2, fill: 'none', strokeLinecap: 'round' }),
+          React.createElement('path', { d: 'M' + (cx - 9) + ' 130 L' + (cx - 12) + ' 136 M' + cx + ' 132 L' + cx + ' 138 M' + (cx + 9) + ' 130 L' + (cx + 12) + ' 136', stroke: '#1E837C', strokeWidth: 1.6, strokeLinecap: 'round' }),
         )
       }
-      return React.createElement('svg', { viewBox: '0 0 170 214', width: 150, height: 188 },
+      const shade = (d, cls) => React.createElement('path', { d: d, fill: 'url(#mikuHairG)', className: cls || undefined })
+      return React.createElement('svg', { viewBox: '0 0 200 262', width: 168, height: 220 },
         React.createElement('defs', null,
-          React.createElement('linearGradient', { id: 'mikuHairG', x1: 0, y1: 0, x2: 0.4, y2: 1 },
+          React.createElement('linearGradient', { id: 'mikuHairG', x1: 0, y1: 0, x2: 0.35, y2: 1 },
             React.createElement('stop', { offset: '0%', stopColor: '#4FE0D2' }),
-            React.createElement('stop', { offset: '100%', stopColor: '#2BA8A0' }),
+            React.createElement('stop', { offset: '100%', stopColor: '#28A69E' }),
           ),
-          React.createElement('linearGradient', { id: 'mikuHairDarkG', x1: 0, y1: 0, x2: 0.4, y2: 1 },
-            React.createElement('stop', { offset: '0%', stopColor: '#2BA8A0' }),
-            React.createElement('stop', { offset: '100%', stopColor: '#1E837C' }),
+          React.createElement('linearGradient', { id: 'mikuHairDarkG', x1: 0, y1: 0, x2: 0.35, y2: 1 },
+            React.createElement('stop', { offset: '0%', stopColor: '#28A69E' }),
+            React.createElement('stop', { offset: '100%', stopColor: '#17777A' }),
+          ),
+          React.createElement('linearGradient', { id: 'mikuSkirtG', x1: 0, y1: 0, x2: 0, y2: 1 },
+            React.createElement('stop', { offset: '0%', stopColor: '#2B5FA8' }),
+            React.createElement('stop', { offset: '100%', stopColor: '#1B3F77' }),
           ),
         ),
-        // 双马尾（后）
-        React.createElement('path', { d: 'M50 62 C20 48 6 72 13 104 C19 132 36 152 52 158 C57 140 54 112 59 92 C63 75 60 66 50 62 Z', fill: 'url(#mikuHairG)' }),
-        React.createElement('path', { d: 'M120 62 C150 48 164 72 157 104 C151 132 134 152 118 158 C113 140 116 112 111 92 C107 75 110 66 120 62 Z', fill: 'url(#mikuHairG)' }),
-        React.createElement('ellipse', { cx: 36, cy: 146, rx: 14, ry: 7, fill: 'url(#mikuHairDarkG)' }),
-        React.createElement('ellipse', { cx: 134, cy: 146, rx: 14, ry: 7, fill: 'url(#mikuHairDarkG)' }),
-        // 后发
-        React.createElement('ellipse', { cx: 85, cy: 78, rx: 52, ry: 48, fill: 'url(#mikuHairG)' }),
-        // 脸
-        React.createElement('ellipse', { cx: 85, cy: 84, rx: 44, ry: 42, fill: '#FFF1E0' }),
-        // 刘海
-        React.createElement('path', { d: 'M41 76 C41 42 60 30 85 30 C110 30 129 42 129 76 C118 56 104 51 85 51 C66 51 52 56 41 76 Z', fill: 'url(#mikuHairG)' }),
-        React.createElement('path', { d: 'M47 72 C55 54 66 48 78 48 C70 58 66 70 64 78 C57 76 51 74 47 72 Z', fill: 'url(#mikuHairG)' }),
-        React.createElement('path', { d: 'M123 72 C115 54 104 48 92 48 C100 58 104 70 106 78 C113 76 119 74 123 72 Z', fill: 'url(#mikuHairG)' }),
-        // 呆毛
-        React.createElement('path', { d: 'M84 32 Q86 18 96 12 Q93 22 98 29 Q90 26 84 32 Z', fill: 'url(#mikuHairG)' }),
-        // 蝴蝶结（左）
-        React.createElement('path', { d: 'M50 42 L28 30 L38 54 Z', fill: '#3A7BD5' }),
-        React.createElement('path', { d: 'M50 42 L72 30 L62 54 Z', fill: '#2B5FA8' }),
-        React.createElement('circle', { cx: 50, cy: 42, r: 6, fill: '#FFFFFF' }),
-        // 眼睛
-        eye(64), eye(106),
-        // 腮红
-        React.createElement('ellipse', { cx: 52, cy: 108, rx: 7, ry: 4, fill: '#FFB6C1', opacity: .65 }),
-        React.createElement('ellipse', { cx: 118, cy: 108, rx: 7, ry: 4, fill: '#FFB6C1', opacity: .65 }),
-        // 嘴
+        // ===== 超长双马尾（初音标志）=====
+        React.createElement('g', { className: 'miku-tail-l' },
+          shade('M68 64 C 38 44 14 58 8 94 C 2 132 6 168 15 202 C 19 218 21 234 17 250 C 31 238 35 214 35 190 C 37 150 43 116 55 94 C 62 80 66 72 68 64 Z'),
+          React.createElement('path', { d: 'M72 68 C 48 52 26 64 22 98 C 18 132 22 162 28 192 C 31 206 32 220 28 234 C 40 224 42 206 42 184 C 44 148 50 118 60 100 C 65 90 69 80 72 68 Z', fill: 'url(#mikuHairDarkG)' }),
+        ),
+        React.createElement('g', { className: 'miku-tail-r' },
+          shade('M132 64 C 162 44 186 58 192 94 C 198 132 194 168 185 202 C 181 218 179 234 183 250 C 169 238 165 214 165 190 C 163 150 157 116 145 94 C 138 80 134 72 132 64 Z'),
+          React.createElement('path', { d: 'M128 68 C 152 52 174 64 178 98 C 182 132 178 162 172 192 C 169 206 168 220 172 234 C 160 224 158 206 158 184 C 156 148 150 118 140 100 C 135 90 131 80 128 68 Z', fill: 'url(#mikuHairDarkG)' }),
+        ),
+        // ===== 后发 =====
+        React.createElement('ellipse', { cx: 100, cy: 96, rx: 58, ry: 52, fill: 'url(#mikuHairG)' }),
+        // ===== 身体（白衬衫 + 蓝领带 + 深蓝百褶裙）=====
+        React.createElement('path', { d: 'M84 156 L84 152 Q84 148 100 148 Q116 148 116 152 L116 156 L122 196 L78 196 Z', fill: '#FFFFFF' }),
+        React.createElement('path', { d: 'M100 150 L88 166 L100 188 L112 166 Z', fill: '#3A5FD0' }),
+        React.createElement('circle', { cx: 100, cy: 166, r: 4, fill: '#FFD700' }),
+        React.createElement('path', { d: 'M78 196 L62 232 Q78 242 94 230 L100 222 L106 230 Q122 242 138 232 L122 196 Z', fill: 'url(#mikuSkirtG)' }),
+        React.createElement('path', { d: 'M84 226 Q100 214 116 226 L112 242 L88 242 Z', fill: '#3A5FD0' }),
+        // ===== 腿（白色过膝袜）+ 鞋 =====
+        React.createElement('rect', { x: 84, y: 226, width: 13, height: 24, rx: 6, fill: '#FFFFFF', stroke: '#D8E8E4', strokeWidth: 1 }),
+        React.createElement('rect', { x: 103, y: 226, width: 13, height: 24, rx: 6, fill: '#FFFFFF', stroke: '#D8E8E4', strokeWidth: 1 }),
+        React.createElement('rect', { x: 79, y: 248, width: 22, height: 11, rx: 5.5, fill: 'url(#mikuSkirtG)' }),
+        React.createElement('rect', { x: 99, y: 248, width: 22, height: 11, rx: 5.5, fill: 'url(#mikuSkirtG)' }),
+        // ===== 脸 =====
+        React.createElement('ellipse', { cx: 100, cy: 100, rx: 47, ry: 46, fill: '#FFF2E2' }),
+        // ===== 刘海（中分 + 鬓发）=====
+        React.createElement('g', { className: 'miku-bang' },
+          React.createElement('path', { d: 'M53 88 C 53 50 72 36 100 36 C 128 36 147 50 147 88 C 136 64 120 58 100 58 C 80 58 64 64 53 88 Z', fill: 'url(#mikuHairG)' }),
+          React.createElement('path', { d: 'M58 84 C 66 62 80 54 94 54 C 85 66 80 82 78 92 C 70 89 63 87 58 84 Z', fill: 'url(#mikuHairG)' }),
+          React.createElement('path', { d: 'M142 84 C 134 62 120 54 106 54 C 115 66 120 82 122 92 C 130 89 137 87 142 84 Z', fill: 'url(#mikuHairG)' }),
+          React.createElement('path', { d: 'M54 86 C 48 108 50 130 58 148 C 66 134 68 112 66 94 Z', fill: 'url(#mikuHairDarkG)' }),
+          React.createElement('path', { d: 'M146 86 C 152 108 150 130 142 148 C 134 134 132 112 134 94 Z', fill: 'url(#mikuHairDarkG)' }),
+        ),
+        // ===== 呆毛 =====
+        React.createElement('path', { d: 'M96 40 Q 100 22 114 16 Q 110 27 116 34 Q 106 31 96 40 Z', fill: 'url(#mikuHairG)' }),
+        // ===== 蝴蝶结（左前发）=====
+        React.createElement('path', { d: 'M92 80 L 62 64 L 74 92 Z', fill: '#3A7BD5' }),
+        React.createElement('path', { d: 'M92 80 L 118 64 L 106 92 Z', fill: '#2B5FA8' }),
+        React.createElement('circle', { cx: 92, cy: 80, r: 8, fill: '#FFFFFF' }),
+        React.createElement('circle', { cx: 92, cy: 80, r: 3.5, fill: '#39C5BB' }),
+        // ===== 眼睛 =====
+        eye(76), eye(124),
+        // ===== 腮红 =====
+        React.createElement('ellipse', { cx: 60, cy: 126, rx: 8.5, ry: 5, fill: '#FFB6C1', opacity: .6 }),
+        React.createElement('ellipse', { cx: 140, cy: 126, rx: 8.5, ry: 5, fill: '#FFB6C1', opacity: .6 }),
+        // ===== 嘴 =====
         mouth,
-        // 身体（chibi 小）
-        React.createElement('path', { d: 'M70 124 Q70 120 85 120 Q100 120 100 124 L104 150 L66 150 Z', fill: '#FFFFFF' }),
-        React.createElement('path', { d: 'M85 122 L77 132 L85 148 L93 132 Z', fill: '#3A7BD5' }),
-        React.createElement('path', { d: 'M66 150 L56 172 Q70 179 85 172 Q100 179 114 172 L104 150 Z', fill: 'url(#mikuHairDarkG)' }),
-        React.createElement('path', { d: 'M74 170 Q85 163 96 170 L93 183 L77 183 Z', fill: '#3A7BD5' }),
-        // 腿 + 鞋
-        React.createElement('rect', { x: 72, y: 180, width: 10, height: 15, rx: 5, fill: '#FFF1E0' }),
-        React.createElement('rect', { x: 88, y: 180, width: 10, height: 15, rx: 5, fill: '#FFF1E0' }),
-        React.createElement('rect', { x: 68, y: 193, width: 17, height: 9, rx: 4.5, fill: 'url(#mikuHairDarkG)' }),
-        React.createElement('rect', { x: 85, y: 193, width: 17, height: 9, rx: 4.5, fill: 'url(#mikuHairDarkG)' }),
       )
     }
 
-    // 台词（含 TTS 友好文本）
     const LINES = [
       { bubble: '你好呀，我是初音未来！', say: '你好呀，我是初音未来！' },
       { bubble: '39！(Thank you!)', say: '39，谢谢！' },
@@ -155,15 +180,14 @@ return {
       const speak = (text, warn) => {
         setBubble(text)
         setBubbleWarn(!!warn)
-        ctx.timeout(() => setBubble((cur) => cur === text ? '' : cur), 3600)
+        ctx.timeout(() => setBubble((cur) => cur === text ? '' : cur), 3800)
       }
 
-      // 眨眼
       React.useEffect(() => {
         const h = ctx.interval(() => {
           setBlink(true)
-          ctx.timeout(() => setBlink(false), 180)
-        }, 3400)
+          ctx.timeout(() => setBlink(false), 200)
+        }, 3600)
         return () => h()
       }, [])
 
@@ -202,7 +226,6 @@ return {
         const line = LINES[Math.floor(Math.random() * LINES.length)]
         speak(line.bubble, false)
         ctx.timeout(() => setMood((m) => m === 'happy' ? 'normal' : m), 1500)
-        // 语音
         try {
           const r = await host.call('miku/speak', { text: line.say })
           if (r && r.ok && r.url) {
@@ -280,7 +303,7 @@ return {
           onClick: onClick,
           title: '点我摸头~',
         }, React.createElement(MikuAvatar, { mood: mood, blink: blink, talking: talking })),
-        React.createElement('div', { className: 'miku-bubble-sub', style: { textAlign: 'center', marginTop: 2, fontSize: 10, color: '#4D7975' } }, usageText),
+        React.createElement('div', { className: 'miku-bubble-sub', style: { textAlign: 'center', marginTop: 2, fontSize: 10.5, color: '#4D7975' } }, usageText),
         audioEl,
       )
     }
