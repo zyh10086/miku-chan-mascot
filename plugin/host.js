@@ -1,7 +1,8 @@
-// Miku-chan Balance Mascot — Host half (v8: cute + TTS)
+// Miku-chan Balance Mascot — Host half (v12: edge-tts voice)
 // DeepSeek Harness (DSH) 动态 Cordis 插件 Host 端源码。
-// 功能：余额查询、会话 token 统计、系统 TTS 语音（SAPI 生成 WAV 经 webServer 提供）、动态工具 miku_status。
+// 功能：余额查询、会话 token 统计、edge-tts 日语女声语音、头像图片路由、动态工具 miku_status。
 // 使用方式：把本文件内容作为 cordis_define 的 code.host 提交。
+// 语音依赖：系统安装 Python 3 + `pip install edge-tts`。
 
 return {
   apply(ctx) {
@@ -70,12 +71,12 @@ return {
       total: usage.input + usage.output,
     }))
 
-    // ---- 语音：TTS 目录在 apply 时缓存为绝对路径 ----
     const sp = ctx.get('sandboxPolicy')
-    const ttsRoot = (sp && sp.workspaceRoot ? sp.workspaceRoot : '.') + '/.miku-tts'
+    const root = sp && sp.workspaceRoot ? sp.workspaceRoot : '.'
+    const ttsRoot = root + '/.miku-tts'
+    const avatarRoot = root + '/.miku-avatar'
 
     const toEncodedCommand = (script) => {
-      // PowerShell -EncodedCommand 需要 UTF-16LE base64
       const bytes = []
       for (let i = 0; i < script.length; i++) {
         const code = script.charCodeAt(i)
@@ -84,36 +85,37 @@ return {
       return btoa(String.fromCharCode.apply(null, bytes))
     }
 
+    // ---- 语音：edge-tts（日语女声 Nanami，最接近 Miku 声线）----
+    // Python 代码经 btoa（UTF-8 base64）传递，文本与输出路径经 spawn env 传递，规避所有转义问题
+    const PY_TTS = [
+      'import asyncio, edge_tts, os',
+      'async def main():',
+      "    c = edge_tts.Communicate(os.environ['MIKU_TEXT'], 'ja-JP-NanamiNeural', rate='+12%', pitch='+35Hz')",
+      "    await c.save(os.environ['MIKU_OUT'])",
+      'asyncio.run(main())',
+    ].join('\u000a')
+
     const speakTts = async (text) => {
       const subprocess = ctx.get('subprocess')
       if (!subprocess) return { ok: false, reason: 'no-subprocess' }
-      const file = 'sp_' + Date.now() + '_' + Math.floor(Math.random() * 10000) + '.wav'
-      const safeText = String(text).replace(/'/g, "''")
+      const file = 'sp_' + Date.now() + '_' + Math.floor(Math.random() * 10000) + '.mp3'
+      const out = ttsRoot + '/' + file
+      const pyB64 = btoa(PY_TTS)
       const script = [
         "$ErrorActionPreference = 'Stop'",
-        'Add-Type -AssemblyName System.Speech',
-        "$dir = '" + ttsRoot + "'",
-        'New-Item -ItemType Directory -Force -Path $dir | Out-Null',
-        "$out = Join-Path $dir '" + file + "'",
-        '$s = New-Object System.Speech.Synthesis.SpeechSynthesizer',
-        "try { $s.SelectVoice('Microsoft Huihui Desktop') } catch {}",
-        '$s.Rate = 1',
-        '$s.Volume = 100',
-        '$s.SetOutputToWaveFile($out)',
-        "$s.Speak('" + safeText + "')",
-        '$s.Dispose()',
-        'Write-Output $out',
+        'New-Item -ItemType Directory -Force -Path ' + "'" + ttsRoot + "'" + ' | Out-Null',
+        'python -c ' + '"' + 'import base64, os; exec(base64.b64decode(' + "'" + pyB64 + "'" + ').decode(' + "'utf-8'" + '))' + '"',
       ].join('; ')
       try {
         const exe = await subprocess.resolveExecutable('powershell')
         const handle = subprocess.spawn({
           argv: [exe, '-NoProfile', '-NonInteractive', '-EncodedCommand', toEncodedCommand(script)],
           cwd: ttsRoot,
+          env: { MIKU_TEXT: String(text), MIKU_OUT: out },
           stdio: { stdin: 'ignore', stdout: { maxBytes: 65536 }, stderr: { maxBytes: 65536 } },
-          graceMs: 30000,
+          graceMs: 40000,
         })
         const outcome = await handle.done
-        const out = handle.collected.stdout.readFrom(0).text
         const err = handle.collected.stderr.readFrom(0).text
         if (outcome.exitCode !== 0) {
           return { ok: false, reason: 'tts', detail: (err || String(outcome.exitCode)).slice(0, 200) }
@@ -124,10 +126,9 @@ return {
       }
     }
 
-    // 台词缓存：同一句不重复生成
     const ttsCache = new Map()
     harness.handle('miku/speak', async (args) => {
-      const text = args && typeof args.text === 'string' ? args.text.slice(0, 60) : ''
+      const text = args && typeof args.text === 'string' ? args.text.slice(0, 120) : ''
       if (!text) return { ok: false, reason: 'empty' }
       if (ttsCache.has(text)) return { ok: true, url: ttsCache.get(text), cached: true }
       const result = await speakTts(text)
@@ -135,7 +136,25 @@ return {
       return result
     })
 
-    // 提供 WAV 静态路由（路径在 apply 时已固定）
+    const AVATAR_EXTS = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg']
+    harness.handle('miku/avatar', async () => {
+      const fsSvc = ctx.get('fs')
+      if (!fsSvc) return { ok: false, reason: 'no-fs' }
+      try {
+        const dirTarget = await fsSvc.resolve(avatarRoot)
+        const entries = await fsSvc.listDir(dirTarget)
+        const image = entries.find((e) => {
+          const name = e.name || ''
+          return AVATAR_EXTS.some((ext) => name.toLowerCase().endsWith(ext))
+        })
+        if (!image) return { ok: false, reason: 'no-image', hint: avatarRoot }
+        const name = image.name || ''
+        return { ok: true, url: '/miku-avatar/' + encodeURIComponent(name), animated: name.toLowerCase().endsWith('.gif') || name.toLowerCase().endsWith('.webp') }
+      } catch (e) {
+        return { ok: false, reason: 'error', detail: String(e && e.message || e).slice(0, 120) }
+      }
+    })
+
     const webServer = ctx.get('webServer')
     const fsSvc = ctx.get('fs')
     if (webServer && fsSvc) {
@@ -146,17 +165,46 @@ return {
           try {
             const raw = (req.url || '').split('?')[0].split('/').pop() || ''
             const name = decodeURIComponent(raw)
-            if (!/^sp_\d+_\d+\.wav$/.test(name)) {
+            if (!/^sp_\d+_\d+\.(mp3|wav)$/.test(name)) {
               res.writeHead(404, { 'Content-Type': 'text/plain' })
               res.end('bad name')
               return
             }
             const target = await fsSvc.resolve(ttsRoot + '/' + name)
             const bytes = await fsSvc.readBytes(target, undefined, 20 * 1024 * 1024)
+            const mime = name.toLowerCase().endsWith('.mp3') ? 'audio/mpeg' : 'audio/wav'
             res.writeHead(200, {
-              'Content-Type': 'audio/wav',
+              'Content-Type': mime,
               'Content-Length': bytes.length,
               'Cache-Control': 'max-age=3600',
+            })
+            res.end(bytes)
+          } catch (e) {
+            res.writeHead(404, { 'Content-Type': 'text/plain' })
+            res.end('err: ' + String(e && e.message || e).slice(0, 120))
+          }
+        },
+      }))
+      ctx.effect(() => webServer.register({
+        kind: 'prefix',
+        path: '/miku-avatar',
+        handler: async (req, res) => {
+          try {
+            const raw = (req.url || '').split('?')[0].split('/').pop() || ''
+            const name = decodeURIComponent(raw)
+            if (!AVATAR_EXTS.some((ext) => name.toLowerCase().endsWith(ext))) {
+              res.writeHead(404, { 'Content-Type': 'text/plain' })
+              res.end('bad ext')
+              return
+            }
+            const target = await fsSvc.resolve(avatarRoot + '/' + name)
+            const bytes = await fsSvc.readBytes(target, undefined, 30 * 1024 * 1024)
+            const ext = name.toLowerCase().split('.').pop()
+            const mime = ext === 'png' ? 'image/png' : ext === 'gif' ? 'image/gif' : ext === 'webp' ? 'image/webp' : ext === 'svg' ? 'image/svg+xml' : 'image/jpeg'
+            res.writeHead(200, {
+              'Content-Type': mime,
+              'Content-Length': bytes.length,
+              'Cache-Control': 'no-cache',
             })
             res.end(bytes)
           } catch (e) {
