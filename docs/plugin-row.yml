@@ -1,0 +1,13 @@
+# 插件行挂载示例（进阶用法）
+# 将 miku-chan-mascot 作为 DSH 部署的静态插件行加载，
+# 而不是每次在会话里动态 cordis_define。
+# 注意：静态插件行与动态 Plugin 是两个不同的加载机制，
+# 此文件仅为想把它固化进部署的开发者提供参考，需按你的部署组合调整。
+
+# dsh 插件示例（cordis 组合，示意结构）：
+# plugins:
+#   - name: miku-chan-mascot
+#     path: ./vendor/miku-chan-mascot
+#     config:
+#       # 插件 Host 端通过凭证服务读取 DEEPSEEK_API_KEY，无需在此配置
+#       enabled: true

@@ -1,0 +1,28 @@
+{
+  "name": "dsh-miku-chan-mascot",
+  "version": "1.0.0",
+  "description": "Hatsune Miku green theme + chibi Miku balance mascot for DeepSeek Harness (DSH). Shows DeepSeek API balance in a cute bubble, tracks token usage, and adds a miku_status tool.",
+  "keywords": [
+    "dsh",
+    "deepseek",
+    "cordis",
+    "plugin",
+    "hatsune-miku",
+    "初音未来",
+    "mascot"
+  ],
+  "license": "MIT",
+  "main": "plugin/host.js",
+  "files": [
+    "plugin",
+    "docs",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "check": "node -e \"require('./plugin/host.js')\""
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
